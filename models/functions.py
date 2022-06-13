@@ -21,43 +21,8 @@ def postprocess_text(text):
     #print(result)
     return result
 
+
 def process_fairy_tales_dataset(dataset_file):
     with open(dataset_file, encoding="utf-8") as f:
         read_data = f.read()
-    tales = read_data.split('\n\n\n\n') 
-    print(len(tales))
-    n = len(tales)
-    name_stories = []
-    for i in range(n):
-        #print(i)
-        temp = tales[i].strip().split("\n\n")
-        filter(lambda x: len(x) > 1, temp)
-        name_of_story = temp[0].strip()
-        if len(name_of_story) < 100 and name_of_story.find('NOTES') and len(name_of_story) > 1:
-              #print(i)
-              #print(name_of_story)
-              name_stories.append(name_of_story)
-        #tales_dict.update({})
-    sprev = 0
-    tales_dict = {}
-    tales_dict.update({})
-    titles = []
-    stories = []
-
-    with open('result_my.txt', 'w', encoding='utf-8') as r:
-        for name in name_stories[1:]:
-            s = read_data.find(name)
-            if s == -1:
-                break
-            story = read_data[ sprev: s]
-            sprev = s
-            temp = story.strip().split("\n\n")
-            print(temp[0])
-
-            text_story = "\n".join(temp[1:])
-            tales_dict.update({temp[0] : text_story})
-            r.write(temp[0] + '\n\n' + text_story + "<EOS>" + '\n\n************************************\n')
-            titles.append(temp[0])
-            stories.append(text_story)
-        # print(temp)
-    return titles, stories
+    
