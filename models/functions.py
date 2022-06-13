@@ -23,6 +23,5 @@ def postprocess_text(text):
 
 
 def process_fairy_tales_dataset(dataset_file):
-    with open(dataset_file, encoding="utf-8") as f:
-        read_data = f.read()
+    pass
     
