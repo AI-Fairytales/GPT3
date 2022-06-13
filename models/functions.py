@@ -22,6 +22,6 @@ def postprocess_text(text):
     return result
 
 
-def process_fairy_tales_dataset(dataset_file):
+def preprocess_dataset(dataset_file):
     pass
     
