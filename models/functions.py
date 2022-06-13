@@ -53,7 +53,7 @@ def process_fairy_tales_dataset(dataset_file):
             story = read_data[ sprev: s]
             sprev = s
             temp = story.strip().split("\n\n")
-            print(temp[0])
+            #print(temp[0])
 
             text_story = "\n".join(temp[1:])
             tales_dict.update({temp[0] : text_story})
