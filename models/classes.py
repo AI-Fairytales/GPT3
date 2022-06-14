@@ -38,7 +38,7 @@ class GPT:
     def __init__(self,
                  engine="text-davinci-002",
                  temperature=0.8,
-                 max_tokens=1000,
+                 max_tokens=2000,
                  input_prefix="input: ",
                  input_suffix="\n",
                  output_prefix="output: ",
