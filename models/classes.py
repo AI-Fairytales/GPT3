@@ -1,6 +1,7 @@
 #used git https://github.com/shreyashankar/gpt3-sandbox
 import openai
 import uuid
+import pandas as pd
 
 class Example:
     """Stores an input, output pair and formats it to prime the model."""
