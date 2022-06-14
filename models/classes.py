@@ -173,6 +173,7 @@ class FairyTaleGenerator:
         """generate one tale"""
        
         for i in range(self.n_examples):
+              self.gpt = GPT()
               n = random.randint(0, self.n_tales)
               title = self.titles[n]
               #print(title)
