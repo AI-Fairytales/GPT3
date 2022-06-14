@@ -1,5 +1,6 @@
 import os
 
+
 def chunk(lst, n):
     for x in range(0, len(lst), n):
         e_c = lst[x : n + x]
