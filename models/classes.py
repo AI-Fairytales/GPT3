@@ -130,7 +130,7 @@ class FairyTaleGenerator:
     def __init__(self, key, dataset_path):
         self.gpt = GPT()
         self.set_openai_key(key)
-        self.n_examples = 5
+        self.n_examples = 1
         self.n_cut = 20 #len of example
         #with open(dataset_path, 'w', encoding='utf-8') as r:
               
