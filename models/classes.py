@@ -180,7 +180,7 @@ class FairyTaleGenerator:
               #story = " ".join(story_list[0 : self.n_cut])
               prompt = "Write long fairy tale of about 500 words. The title of it should be {title}"
               result = story[0:2000].strip()
-              print(title)
+              #print(title)
               #print(result)
               
               self.gpt.add_example(Example(prompt, result))
