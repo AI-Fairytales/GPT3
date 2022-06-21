@@ -1,6 +1,8 @@
 #used git https://github.com/shreyashankar/gpt3-sandbox
 import openai
 import uuid
+import random
+import pandas as pd
 
 class Example:
     """Stores an input, output pair and formats it to prime the model."""
@@ -36,7 +38,7 @@ class GPT:
     def __init__(self,
                  engine="text-davinci-002",
                  temperature=0.8,
-                 max_tokens=1000,
+                 max_tokens=2000,
                  input_prefix="input: ",
                  input_suffix="\n",
                  output_prefix="output: ",
@@ -121,3 +123,90 @@ class GPT:
         return self.input_prefix + ex.get_input(
         ) + self.input_suffix + self.output_prefix + ex.get_output(
         ) + self.output_suffix
+
+    
+class FairyTaleGenerator:
+    """Stores an input, output pair and formats it to prime the model."""
+    def __init__(self, key, dataset_path):
+        self.gpt = GPT()
+        self.set_openai_key(key)
+        self.n_examples = 1
+        self.n_cut = 20 #len of example
+        #with open(dataset_path, 'w', encoding='utf-8') as r:
+              
+        df = pd.read_csv(dataset_path, sep = '\t')
+        self.titles = df['title'].values.tolist()
+        self.stories = df['story'].values.tolist()
+        self.n_tales = len(self.titles)
+        #print(df.head())
+        #print(self.n_tales)
+
+    def set_openai_key(self, key):
+        """Sets OpenAI key."""
+        openai.api_key = key   
+
+    def set_params(self, nexamples = 5, n_cut = 200):
+        self.n_examples = nexamples
+        self.n_cut = n_cut #len of example
+
+     
+    def postprocess_tale(self, text):
+        def chunk(lst, n):
+            for x in range(0, len(lst), n):
+                e_c = lst[x : n + x]
+                yield e_c
+
+   
+        text = text.replace('\n\n', '\n')
+        #print(text)
+        words_list = text.split(" ")
+        #print(words_list)
+        parts_list = list(chunk(words_list, 30))
+        #print(parts_list)
+        parts_str = [" ".join(part) for part in parts_list]
+        #print(parts_str)
+        result = "\n".join(parts_str) 
+        #print(result)
+        return result       
+
+    def get_one_tale(self, keyword):
+        """generate one tale"""
+        self.gpt = GPT() #Marias edition
+        for i in range(self.n_examples):
+              n = random.randint(0, self.n_tales)
+              title = self.titles[n]
+              #print(title)
+              story = self.stories[n] 
+              #print(len(story.split()))
+              #story_list = story.split()
+              #story = " ".join(story_list[0 : self.n_cut])
+              prompt = "Write long fairy tale of about 500 words. The title of it should be {title}"
+              result = story[0:2000].strip()
+              #print(title)
+              #print(result)
+              
+              self.gpt.add_example(Example(prompt, result))
+
+        #keyword = "About A dog catching a ball"      
+        ask = f"Write long fairy tale of about 500 words. The title of it should be {keyword}"
+        responce = self.gpt.get_top_reply(ask)
+        tale = self.postprocess_tale(responce)
+        #sentiment = self.get_sentiment_analyse(tale)
+        return (tale)
+
+    def get_sentiment_analyse(self, tale):
+        self.gpt = GPT()
+        ask = f"Decide whether a Tale's sentiment is positive, neural or negative\n\n \
+                Tale: {tale}\n \
+                Sentiment:"
+        responce = self.gpt.get_top_reply(ask)
+        return responce
+
+
+
+    def get_many_tales(self, keywords):  
+        tales = []
+        for keyword in keywords:
+             tales.append(self.get_one_tale(keyword))
+        return tales     
+            
