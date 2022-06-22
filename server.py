@@ -6,30 +6,15 @@ import pandas as pd
 import openai
 import uuid
 import os
+from models.functions import chunk, postprocess_text, process_fairy_tales_dataset
+from models.classes import Example, GPT, FairyTaleGenerator
 
-#from gtts import gTTS
 
-
+titles, stories, df = process_fairy_tales_dataset('./', 'merged_clean2.txt')
 st.title('Fairytail Generation')
 st.image("https://i.postimg.cc/yN20YX4F/Stories.png", use_column_width=True)
 #keywords = ['Princess stuck in tower', 'Dragon and birds','Little boy, who disobey parent','Sun day','Little plant', 'Dinosaur and men']
 keywords = ['Flowers and bees']
-
-def GPT_Completion(texts, key):
-    ## Call the API key under your account (in a secure way)
-    openai.api_key = key
-    response = openai.Completion.create(
-    engine="text-davinci-002",
-    prompt =  texts,
-    temperature = 0.8,
-    top_p = 1,
-    max_tokens = 2000,
-    frequency_penalty = 0,
-    presence_penalty = 0,
-    n = 1
-    )
-    print(response.choices[0].text)
-    return response.choices[0].text
 
 try:
     form_0 = st.form(key='my-form0')
@@ -38,7 +23,6 @@ try:
 
 except Exception as e:
     st.success(f'Need key to proceed')
-
 try:
     form_1 = st.form(key='my-form1')
     command = form_1.selectbox("Choose your story character",
@@ -46,8 +30,8 @@ try:
     submit = form_1.form_submit_button('Submit')
 
     if submit:
-        recipe = 'Tell fairytail about {}.'.format(command)
-        responce = GPT_Completion(recipe, key)
+        #ftg = FairyTaleGenerator(key, "tales.csv")
+        #responce = ftg.get_one_tale(command)
         st.text_area('Fairytail about {}:'.format(command), responce)
         st.download_button('Download text of fairytail', responce)
         language = 'en'

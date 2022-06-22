@@ -30,7 +30,7 @@ def process_fairy_tales_dataset(dataset_path, dataset_file):
     with open(os.path.join(dataset_path, dataset_file), encoding="utf-8") as f:
           read_data = f.read()
     tales = read_data.split('\n\n\n\n') 
-    print(len(tales))
+    #print(len(tales))
     n = len(tales)
     name_stories = []
     for i in range(n):
