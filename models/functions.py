@@ -1,6 +1,15 @@
 import os
+import requests
+import json
+import time
 import pandas as pd
 
+
+URL_CONVERT = "https://play.ht/api/v1/convert"
+URL_GET_AUDIO = "https://play.ht/api/v1/articleStatus"
+USER_ID = 'e3KRfjvXUgZN3LoA1DzYlXpJdmC2'
+MAX_ATTEMPTS = 5
+LAG = 0.5
 
 def chunk(lst, n):
     for x in range(0, len(lst), n):
@@ -76,3 +85,37 @@ def process_fairy_tales_dataset(dataset_path, dataset_file):
     #print(df.head())    
     return titles, stories, df
     
+
+def get_audio(text, voice, title, API_KEY):
+    payload = json.dumps({
+          "voice": voice,
+          "content": [text],
+          "title": title
+    })
+    headers = {
+         'Authorization': API_KEY,
+         'X-User-ID': USER_ID,
+         'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url = URL_CONVERT, headers=headers, data=payload)
+    result = response.json()
+    transcriptionId = result['transcriptionId']
+    #result = json.loads(json_ob)
+    print(transcriptionId)
+
+    url = "https://play.ht/api/v1/articleStatus" + f"?transcriptionId={transcriptionId}"
+#     print(url)
+    filename = 'tale.mp3'
+    for i in range(MAX_ATTEMPTS): 
+        response = requests.get(url, headers = headers)
+        result = response.json()
+        status = result['converted']
+        if status == True:
+          file_url = result['audioUrl']
+          r = requests.get(file_url)
+          with open(filename, 'wb') as f:
+               f.write(r.content)
+               return 0, filename
+          time.sleep(LAG)
+    return -1, None     
