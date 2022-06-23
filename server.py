@@ -15,6 +15,8 @@ st.title('Fairytail Generation')
 st.image("https://i.postimg.cc/yN20YX4F/Stories.png", use_column_width=True)
 #keywords = ['Princess stuck in tower', 'Dragon and birds','Little boy, who disobey parent','Sun day','Little plant', 'Dinosaur and men']
 keywords = ['Flowers and bees']
+responce = 'test'
+command = ''
 
 try:
     form_0 = st.form(key='my-form0')
@@ -35,13 +37,12 @@ try:
     command = form_1.selectbox("Choose your story character",
 ('knight','princess', 'dragon', 'dog', 'king'))
     submit = form_1.form_submit_button('Submit 0')
-
     if submit:
         ftg = FairyTaleGenerator(key_0, "tales.csv")
         #responce = ftg.get_one_tale(command)
         #st.text_area('Fairytail about {}:'.format(command), responce)
         #st.download_button('Download text of fairytail', responce)
-        respond = 'tesst'
+        responce = 'here we are in if condition'
         st.text_area('Fairytail about {}:'.format(command), command)
         st.download_button('Download text of fairytail', command)
 
@@ -56,17 +57,17 @@ try:
         if command_1 == 'woman':
             title = "tale"
             voice = "Emilia"
-            status, filename = get_audio(respond, voice, title, key_3)
+            status, filename = get_audio(responce, voice, title, key_3)
             #audio_file = open('welcome.mp3', 'rb')
             #audio_bytes = audio_file.read()
             st.audio(filename)
         if command_1 == 'man':
-                title = "tale"
-                voice = "Noah"
-                status, filename = get_audio(respond, voice, title, key_3)
-                #audio_file = open('welcome.mp3', 'rb')
-                #audio_bytes = audio_file.read()
-                st.audio(filename)
+            title = "tale"
+            voice = "Noah"
+            status, filename = get_audio(responce, voice, title, key_3)
+            #audio_file = open('welcome.mp3', 'rb')
+            #audio_bytes = audio_file.read()
+            st.audio(filename)
 
 except Exception as e:
     st.success(f'Something Went Wrong! {e}')
