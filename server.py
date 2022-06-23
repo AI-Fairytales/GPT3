@@ -1,22 +1,24 @@
 #!/usr/bin/env python
 import streamlit as st
+import base64
+import requests
 import sys
 import numpy as np
 import pandas as pd
 import openai
 import uuid
 import os
-from models.functions import chunk, postprocess_text, process_fairy_tales_dataset, get_audio
+from models.functions import chunk, postprocess_text, process_fairy_tales_dataset, get_audio, get_images_tale
 from models.classes import Example, GPT, FairyTaleGenerator
 
 
 titles, stories, df = process_fairy_tales_dataset('./', 'merged_clean2.txt')
 st.title('Fairytail Generation')
-st.image("https://i.postimg.cc/yN20YX4F/Stories.png", use_column_width=True)
-#keywords = ['Princess stuck in tower', 'Dragon and birds','Little boy, who disobey parent','Sun day','Little plant', 'Dinosaur and men']
-keywords = ['Flowers and bees']
-responce = 'test'
-command = ''
+
+# r = requests.post(url='https://hf.space/embed/valhalla/glide-text2im/+/api/predict/',      json={"data": ['text']})
+# encoding = r.json()['data'][0][22:]
+# image_64_decode = base64.b64decode(encoding)
+# st.image(image_64_decode)
 
 try:
     form_0 = st.form(key='my-form0')
@@ -41,11 +43,14 @@ try:
     submit = form_1.form_submit_button('Submit 0')
     if submit:
         ftg = FairyTaleGenerator(key_0, "tales.csv")
-        #responce = ftg.get_one_tale(command)
-        #st.text_area('Fairytail about {}:'.format(command), responce)
-        #st.download_button('Download text of fairytail', responce)
-        responce = st.text_area('Fairytail about {}:'.format(command), command)
-        st.download_button('Download text of fairytail', command)
+        responce = ftg.get_one_tale(command)
+        st.text_area('Fairytail about {}:'.format(command), responce)
+        st.download_button('Download text of fairytail', responce)
+        #responce = 'Fairytail about {}:. Tell me fairy tail'.format(command)
+        #st.download_button('Download text of fairytail', command)
+        image_names, parts = get_images_tale(responce, command)
+        for i in image_names:
+            st.image(i)
         if command_1 == 'woman':
             title = "tale"
             voice = "Emilia"

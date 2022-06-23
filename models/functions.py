@@ -3,13 +3,16 @@ import requests
 import json
 import time
 import pandas as pd
+import random
+import base64
 
 
+MAX_IMAGES = 4
 URL_CONVERT = "https://play.ht/api/v1/convert"
 URL_GET_AUDIO = "https://play.ht/api/v1/articleStatus"
 USER_ID = 'e3KRfjvXUgZN3LoA1DzYlXpJdmC2'
-MAX_ATTEMPTS = 5
-LAG = 0.5
+MAX_ATTEMPTS = 10
+LAG = 1
 
 def chunk(lst, n):
     for x in range(0, len(lst), n):
@@ -119,3 +122,28 @@ def get_audio(text, voice, title, API_KEY):
                return 0, filename
           time.sleep(LAG)
     return -1, None     
+
+
+def get_images_tale(tale, title):
+   
+   sentences = tale.split(".")
+   n = len(sentences)
+   print(n)
+   part = n // MAX_IMAGES
+   result  = [sentences[i * part + random.randint(0, part - 1)] for i in range(MAX_IMAGES)]
+   print(result)
+   result[0] = sentences[0]
+   
+   image_names = []
+ 
+   for i in range(len(result)):
+      r = requests.post(url='https://hf.space/embed/valhalla/glide-text2im/+/api/predict/',  json={"data": [result[i]]})
+      #print(r)
+      encoding = r.json()['data'][0][22:]
+      image_64_decode = base64.b64decode(encoding) 
+      image_result = open(f'image{i}.jpg', 'wb') # create a writable image and write the decoding result
+      image_result.write(image_64_decode)
+      image_names.append(f'image{i}.jpg')
+   #image_names = get_images(result)
+   tale_parts = [".".join(sentences[i * part : i * part + part]) for i in range(MAX_IMAGES)]
+   return image_names, tale_parts
