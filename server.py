@@ -37,20 +37,21 @@ except Exception as e:
 try:
     form_1 = st.form(key='my-form1')
     command = form_1.selectbox("Choose your story character",
-('knight','princess', 'dragon', 'dog', 'king'))
+('Knight','Princess', 'Dragon', 'Dog', 'King'))
     command_1 = form_1.selectbox("Choose your story teller",
-('woman','man'))
-    submit = form_1.form_submit_button('Submit 0')
+('Woman','Man'))
+    submit = form_1.form_submit_button('Generate fairytail')
     if submit:
         ftg = FairyTaleGenerator(key_0, "tales.csv")
-        responce = ftg.get_one_tale(command)
+        responce = ftg.get_one_tale(command.lower())
+        image_names, parts = get_images_tale(responce, command)
+        table = st.columns(len(image_names))
+        for i, n in enumerate(image_names):
+            table[i] = st.image(n)
         st.text_area('Fairytail about {}:'.format(command), responce)
         st.download_button('Download text of fairytail', responce)
         #responce = 'Fairytail about {}:. Tell me fairy tail'.format(command)
         #st.download_button('Download text of fairytail', command)
-        image_names, parts = get_images_tale(responce, command)
-        for i in image_names:
-            st.image(i)
         if command_1 == 'woman':
             title = "tale"
             voice = "Emilia"
