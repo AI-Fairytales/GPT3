@@ -141,8 +141,8 @@ def get_images_tale(tale, title):
       #print(r)
       encoding = r.json()['data'][0][22:]
       image_64_decode = base64.b64decode(encoding) 
-      image_result = open(f'image{i}.jpg', 'wb') # create a writable image and write the decoding result
-      image_result.write(image_64_decode)
+      #image_result = open(f'image{i}.jpg', 'wb') # create a writable image and write the decoding result
+      #image_result.write(image_64_decode)
       image_names.append(f'image{i}.jpg')
    #image_names = get_images(result)
    tale_parts = [".".join(sentences[i * part : i * part + part]) for i in range(MAX_IMAGES)]
