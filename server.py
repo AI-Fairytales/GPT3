@@ -36,24 +36,16 @@ try:
     form_1 = st.form(key='my-form1')
     command = form_1.selectbox("Choose your story character",
 ('knight','princess', 'dragon', 'dog', 'king'))
+    command_1 = form_1.selectbox("Choose your story teller",
+('woman','man'))
     submit = form_1.form_submit_button('Submit 0')
     if submit:
         ftg = FairyTaleGenerator(key_0, "tales.csv")
         #responce = ftg.get_one_tale(command)
         #st.text_area('Fairytail about {}:'.format(command), responce)
         #st.download_button('Download text of fairytail', responce)
-        responce = 'here we are in if condition'
-        st.text_area('Fairytail about {}:'.format(command), command)
+        responce = st.text_area('Fairytail about {}:'.format(command), command)
         st.download_button('Download text of fairytail', command)
-
-except Exception as e:
-    st.success(f'Something Went Wrong! {e}')   
-try:
-    command_1 = form_1.selectbox("Choose your story teller",
-('woman','man'))
-    submit_1 = form_1.form_submit_button('Submit 1')
-    if submit_1:
-        #print(responce)
         if command_1 == 'woman':
             title = "tale"
             voice = "Emilia"
@@ -70,7 +62,10 @@ try:
             st.audio(filename)
 
 except Exception as e:
-    st.success(f'Something Went Wrong! {e}')
+    st.success(f'Something Went Wrong! {e}')   
+    #submit_1 = form_1.form_submit_button('Submit 1')
+    #if submit_1:
+        #print(responce)
 
 
 
