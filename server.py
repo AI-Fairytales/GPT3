@@ -52,14 +52,14 @@ try:
         st.download_button('Download text of fairytail', responce)
         #responce = 'Fairytail about {}:. Tell me fairy tail'.format(command)
         #st.download_button('Download text of fairytail', command)
-        if command_1 == 'woman':
+        if command_1 == 'Woman':
             title = "tale"
             voice = "Emilia"
             status, filename = get_audio(responce, voice, title, key_3)
             #audio_file = open('welcome.mp3', 'rb')
             #audio_bytes = audio_file.read()
             st.audio(filename)
-        if command_1 == 'man':
+        if command_1 == 'Man':
             title = "tale"
             voice = "Noah"
             status, filename = get_audio(responce, voice, title, key_3)
