@@ -18,7 +18,7 @@ from prompts import var_dict
 
 #titles, stories, df = process_fairy_tales_dataset('./', 'merged_clean2.txt')
 st.title('Fairytale Generation')
-
+st.image("https://i.postimg.cc/yN20YX4F/Stories.png", use_column_width=True)
 
 try:
     #print(st.__installation_id__)
@@ -44,8 +44,8 @@ try:
     make_images = st.button('Make images', disabled = show_listen)
     if generate:
         #ftg = FairyTaleGenerator(key_openai, "tales.csv")
-        res = random.choice(var_dict[hero])
-        print(res)
+        story_prompt = random.choice(var_dict[hero])
+        print('story prompt: ', story_prompt)
         st.session_state['responce'] = "The kingdom of Ayland was in turmoil. The king and queen had died, leaving behind them a young daughter, Princess Aurora. Aurora was only six years old when her parents\
 died, and so the kingdom was left in the care of her uncle, Duke Henry.\
 Duke Henry was a kind man, and he loved his niece dearly. But he was also\
@@ -65,7 +65,7 @@ They rode off into the sunset, and they lived happily ever after.\
         print('responce' in st.session_state)
 
     if make_images:
-        #responce = ftg.get_one_tale(command.lower())
+        #responce = ftg.get_one_tale(story_prompt.lower())
         image_names, parts = get_images_tale(responce, hero)
         st.session_state['image_names'], st.session_state['tale_parts'] = image_names, parts
         #parts = get_images_tale(responce, command)
