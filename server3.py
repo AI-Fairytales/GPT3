@@ -89,7 +89,7 @@ try:
     form_2 = st.form(key='my-form2')
     command_2 = form_2.selectbox("Choose your story teller",
 ('Woman','Man'))
-    submit = form_2.form_submit_button('Generate fairytail')
+    submit = form_2.form_submit_button('Generate story teller voice')
     if submit:
         if command_2 == 'Woman':
             title = "tale"
