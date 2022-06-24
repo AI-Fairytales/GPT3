@@ -37,21 +37,22 @@ try:
 
 
     generate = form_1.form_submit_button('Generate fairytale')
-    voice_name = form_1.selectbox("Choose your story teller", voice_names)
+    voice_name = form_1.selectbox("Choose your story teller", voice_names, index = 62)
     listen = st.button('Listen fairytale', disabled = show_listen)
     make_images = st.button('Make images', disabled = show_listen)
     if generate:
-        #ftg = FairyTaleGenerator(key_openai, "tales.csv")
-        st.session_state['responce'] = "The kingdom of Ayland was in turmoil. The king and queen had died, leaving behind them a young daughter, Princess Aurora. Aurora was only six years old when her parents\
-died, and so the kingdom was left in the care of her uncle, Duke Henry.\
-Duke Henry was a kind man, and he loved his niece dearly. But he was also\
-a ambitious man, and he had his sights set on the throne. So when it became clear that the people of Ayland would not accept him as their king, he\
-hatched a plan to get rid of Princess Aurora.\
-He had a tower built in the middle of the forest, and he had Aurora locked away inside it. The only person\
-who was allowed to visit her was her nurse, who brought her food and supplies.\
-Phillip returned the next day with a ladder. He climbed up to the window and helped Aurora down.\
-They rode off into the sunset, and they lived happily ever after.\
-"
+        ftg = FairyTaleGenerator(key_openai, "tales.csv")
+        st.session_state['responce'] = ftg.get_one_tale(hero.lower())
+#             "The kingdom of Ayland was in turmoil. The king and queen had died, leaving behind them a young daughter, Princess Aurora. Aurora was only six years old when her parents\
+# died, and so the kingdom was left in the care of her uncle, Duke Henry.\
+# Duke Henry was a kind man, and he loved his niece dearly. But he was also\
+# a ambitious man, and he had his sights set on the throne. So when it became clear that the people of Ayland would not accept him as their king, he\
+# hatched a plan to get rid of Princess Aurora.\
+# He had a tower built in the middle of the forest, and he had Aurora locked away inside it. The only person\
+# who was allowed to visit her was her nurse, who brought her food and supplies.\
+# Phillip returned the next day with a ladder. He climbed up to the window and helped Aurora down.\
+# They rode off into the sunset, and they lived happily ever after.\
+# "
         print("generate")
         responce = st.session_state['responce']
         for key in ['image_names', 'audio', 'tale_parts']:
@@ -61,7 +62,7 @@ They rode off into the sunset, and they lived happily ever after.\
         print('responce' in st.session_state)
 
     if make_images:
-        #responce = ftg.get_one_tale(command.lower())
+
         image_names, parts = get_images_tale(responce, hero)
         st.session_state['image_names'], st.session_state['tale_parts'] = image_names, parts
         #parts = get_images_tale(responce, command)
