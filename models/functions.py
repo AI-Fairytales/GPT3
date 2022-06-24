@@ -7,6 +7,7 @@ import random
 import base64
 from fpdf import FPDF
 import yaml
+import streamlit as st
 
 
 MAX_IMAGES = 4
@@ -116,6 +117,7 @@ def get_audio(text, voice, title, API_KEY):
         response = requests.get(url, headers = headers)
         result = response.json()
         status = result['converted']
+        print(status)
         if status == True:
           file_url = result['audioUrl']
           r = requests.get(file_url)
@@ -128,7 +130,7 @@ def get_audio(text, voice, title, API_KEY):
 
 def get_images_tale(tale, title):
    
-   sentences = tale.split(".")
+   sentences = tale.split(". ")
    n = len(sentences)
    print(n)
    part = n // MAX_IMAGES
@@ -191,8 +193,16 @@ def create_pdf(texts, image_names):
 #         data = f.read()
 #     return data
 
+@st.cache
 def read_keys():
     # Read YAML file
     with open("conf.yaml", 'r') as stream:
         data_loaded = yaml.safe_load(stream)
     return data_loaded['key_openai'], data_loaded['key_playht']
+
+@st.cache
+def read_voices():
+    voices = pd.read_csv("voices.csv", sep = ";")
+    voice_ids = voices['voice_id'].values.tolist()
+    voice_names = voices['voice_name'].values.tolist()
+    return voice_ids, voice_names
