@@ -18,7 +18,7 @@ if 'store' not in st.session_state:
 
 titles, stories, df = process_fairy_tales_dataset('./', 'merged_clean2.txt')
 st.title('Fairytail Generation')
-
+st.image("https://i.postimg.cc/yN20YX4F/Stories.png", use_column_width=True)
 # r = requests.post(url='https://hf.space/embed/valhalla/glide-text2im/+/api/predict/',      json={"data": ['text']})
 # encoding = r.json()['data'][0][22:]
 # image_64_decode = base64.b64decode(encoding)
