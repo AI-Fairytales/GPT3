@@ -8,15 +8,17 @@ import pandas as pd
 import openai
 import uuid
 import os
+import random
 from models.functions import chunk, postprocess_text, process_fairy_tales_dataset, \
      get_audio, get_images_tale, create_pdf, read_keys, read_voices
 from models.classes import Example, GPT, FairyTaleGenerator
+from prompts import var_dict
 #import pdfkit
 
 
 #titles, stories, df = process_fairy_tales_dataset('./', 'merged_clean2.txt')
 st.title('Fairytale Generation')
-
+st.image("https://i.postimg.cc/yN20YX4F/Stories.png", use_column_width=True)
 
 try:
     #print(st.__installation_id__)
@@ -24,11 +26,12 @@ try:
     key_openai, key_playht = read_keys()
     voice_ids, voice_names = read_voices()
     hero = form_1.selectbox("Choose your story character", ('Knight', 'Princess', 'Dragon', 'Dog', 'King'))
+    story_prompt = random.choice(var_dict[hero])
     print('responce' in st.session_state)
     if 'responce' in st.session_state:
 
         responce = st.session_state['responce']
-        responce = form_1.text_area('Fairytail about {}:'.format(hero), responce, height=400)
+        responce = form_1.text_area('Fairytail about {}:'.format(story_prompt), responce, height=400)
         show_listen = False
         print(responce)
     else:
@@ -55,6 +58,8 @@ try:
 # "
         print("generate")
         responce = st.session_state['responce']
+        print('story prompt: ', story_prompt)
+
         for key in ['image_names', 'audio', 'tale_parts']:
             if key in st.session_state:
                 st.session_state.pop(key)
@@ -62,7 +67,6 @@ try:
         print('responce' in st.session_state)
 
     if make_images:
-
         image_names, parts = get_images_tale(responce, hero)
         st.session_state['image_names'], st.session_state['tale_parts'] = image_names, parts
         #parts = get_images_tale(responce, command)
