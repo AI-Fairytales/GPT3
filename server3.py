@@ -13,8 +13,8 @@ from models.functions import chunk, postprocess_text, process_fairy_tales_datase
 from models.classes import Example, GPT, FairyTaleGenerator
 #import pdfkit
 
-if 'store' not in st.session_state:
-     st.session_state.store = False
+# if 'store' not in st.session_state:
+#      st.session_state.store = False
 
 titles, stories, df = process_fairy_tales_dataset('./', 'merged_clean2.txt')
 st.title('Fairytail Generation')
@@ -68,8 +68,8 @@ They rode off into the sunset, and they lived happily ever after.\
         st.text_area('Fairytail about {}:'.format(command.lower()), st.session_state['responce'], height = 400)
         data = create_pdf(parts, image_names)
         #data = create_pdf(parts)
-        if submit or st.session_state.store:
-            st.session_state.store = True
+        # if submit or st.session_state.store:
+        #     st.session_state.store = True
         st.download_button(
             "⬇️ Download PDF",
             data=data,
