@@ -26,12 +26,12 @@ try:
     key_openai, key_playht = read_keys()
     voice_ids, voice_names = read_voices()
     hero = form_1.selectbox("Choose your story character", ('Knight', 'Princess', 'Dragon', 'Dog', 'King'))
-    story_prompt = random.choice(var_dict[hero])
+
     print('responce' in st.session_state)
     if 'responce' in st.session_state:
 
         responce = st.session_state['responce']
-        responce = form_1.text_area('Fairytail about {}:'.format(story_prompt), responce, height=400)
+        responce = form_1.text_area('Fairytail about {}:'.format(st.session_state['story_prompt']), responce, height=400)
         show_listen = False
         print(responce)
     else:
@@ -40,12 +40,15 @@ try:
 
 
     generate = form_1.form_submit_button('Generate fairytale')
-    voice_name = form_1.selectbox("Choose your story teller", voice_names, index = 62)
-    listen = st.button('Listen fairytale', disabled = show_listen)
-    make_images = st.button('Make images', disabled = show_listen)
+    voice_name = form_1.selectbox("Choose your story teller", voice_names, index=62)
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+            listen = st.button('Listen fairytale', disabled=show_listen)
+    with col2:
+            make_images = st.button('Make images', disabled = show_listen)
     if generate:
         ftg = FairyTaleGenerator(key_openai, "tales.csv")
-        st.session_state['responce'] = ftg.get_one_tale(hero.lower())
+        st.session_state['responce'] = ftg.get_one_tale(hero.lower()).replace("output:", "").strip()
 #             "The kingdom of Ayland was in turmoil. The king and queen had died, leaving behind them a young daughter, Princess Aurora. Aurora was only six years old when her parents\
 # died, and so the kingdom was left in the care of her uncle, Duke Henry.\
 # Duke Henry was a kind man, and he loved his niece dearly. But he was also\
@@ -58,6 +61,7 @@ try:
 # "
         print("generate")
         responce = st.session_state['responce']
+        st.session_state['story_prompt'] = story_prompt = random.choice(var_dict[hero])
         print('story prompt: ', story_prompt)
 
         for key in ['image_names', 'audio', 'tale_parts']:
@@ -65,6 +69,7 @@ try:
                 st.session_state.pop(key)
         print(responce)
         print('responce' in st.session_state)
+        st.experimental_rerun()
 
     if make_images:
         image_names, parts = get_images_tale(responce, hero)
@@ -77,7 +82,7 @@ try:
             with table[i]:
                 st.image(st.session_state['image_names'][i])
     if ('image_names' in  st.session_state) and ('responce' in  st.session_state) and ('tale_parts' in st.session_state) :
-        data = create_pdf(st.session_state['tale_parts'], st.session_state['image_names'])
+        data = create_pdf(st.session_state['story_prompt'], st.session_state['tale_parts'], st.session_state['image_names'])
         st.download_button(
             "⬇️ Download Tale",
             data=data,

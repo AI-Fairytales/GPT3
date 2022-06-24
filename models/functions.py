@@ -175,9 +175,12 @@ def add_image(image_path, pdf):
 
 
 
-def create_pdf(texts, image_names):
+def create_pdf(title, texts, image_names):
     pdf = FPDF()
     pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    print(title)
+    pdf.cell(200, 10, txt=title, ln = 1, align="C")
 
     for i in range(len(texts)):
         add_text(texts[i], pdf)
@@ -197,7 +200,7 @@ def create_pdf(texts, image_names):
 #         data = f.read()
 #     return data
 
-@st.cache
+
 def read_keys():
     # Read YAML file
     with open("conf.yaml", 'r') as stream:

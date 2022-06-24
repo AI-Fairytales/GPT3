@@ -192,6 +192,8 @@ class FairyTaleGenerator:
         responce = self.gpt.get_top_reply(ask)
         tale = self.postprocess_tale(responce)
         #sentiment = self.get_sentiment_analyse(tale)
+        print("********")
+        print(tale)
         return (tale)
 
     def get_sentiment_analyse(self, tale):
