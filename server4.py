@@ -73,8 +73,9 @@ try:
 
     if 'image_names' in st.session_state:
         table = st.columns(len(st.session_state['image_names']))
-        for i, n in enumerate(st.session_state['image_names']):
-            table[i] = st.image(n)
+        for i in range(len(st.session_state['image_names'])):
+            with table[i]:
+                st.image(st.session_state['image_names'][i])
     if ('image_names' in  st.session_state) and ('responce' in  st.session_state) and ('tale_parts' in st.session_state) :
         data = create_pdf(st.session_state['tale_parts'], st.session_state['image_names'])
         st.download_button(
