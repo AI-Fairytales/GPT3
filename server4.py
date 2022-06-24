@@ -24,7 +24,7 @@ try:
     #print(st.__installation_id__)
     form_1 = st.form(key='my-form1')
     #key_openai, key_playht = read_keys()
-    key_openai, key_playht = KEY_OP, KEY_PLAY
+    key_openai, key_playht = os.environ['KEY_OP'], os.environ['KEY_PLAY']
     voice_ids, voice_names = read_voices()
     hero = form_1.selectbox("Choose your story character", ('Knight', 'Princess', 'Dragon', 'Dog', 'King'))
     story_prompt = random.choice(var_dict[hero])
