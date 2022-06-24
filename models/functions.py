@@ -5,6 +5,7 @@ import time
 import pandas as pd
 import random
 import base64
+from fpdf import FPDF
 
 
 MAX_IMAGES = 4
@@ -140,10 +141,51 @@ def get_images_tale(tale, title):
       r = requests.post(url='https://hf.space/embed/valhalla/glide-text2im/+/api/predict/',  json={"data": [result[i]]})
       #print(r)
       encoding = r.json()['data'][0][22:]
-      image_64_decode = base64.b64decode(encoding) 
-      image_result = open(f'image{i}.jpg', 'wb') # create a writable image and write the decoding result
+      image_64_decode = base64.b64decode(encoding)
+      image_result = open(f'image{i}.png', 'wb') # create a writable image and write the decoding result
       image_result.write(image_64_decode)
-      image_names.append(f'image{i}.jpg')
+      image_names.append(f'image{i}.png')
    #image_names = get_images(result)
    tale_parts = [".".join(sentences[i * part : i * part + part]) for i in range(MAX_IMAGES)]
    return image_names, tale_parts
+   #return tale_parts
+
+
+def add_text(text, pdf):
+    #pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    lines = text.split(".")
+    print(len(lines))
+    for line in lines:
+        pdf.cell(200, 10, txt=line, ln=1, align="L")
+
+
+def add_image(image_path, pdf):
+    pdf.image(image_path, w=100, type = 'PNG')
+    #pdf.set_font("Arial", size=12)
+    #pdf.ln(85)  # ниже на 85
+    #pdf.cell(200, 10, txt="{}".format(image_path), ln=1)
+
+
+
+def create_pdf(texts, image_names):
+    pdf = FPDF()
+    pdf.add_page()
+
+    for i in range(len(texts)):
+        add_text(texts[i], pdf)
+        add_image(image_names[i], pdf)
+    pdf.output("output.pdf")
+    with open("output.pdf", 'rb') as f:
+        data = f.read()
+    return data
+
+# def create_pdf(texts):
+#     pdf = FPDF()
+#     for i in range(len(texts)):
+#         add_text(texts[i], pdf)
+#         #add_image(image_names[i], pdf)
+#     pdf.output("output.pdf")
+#     with open("output.pdf", 'rb') as f:
+#         data = f.read()
+#     return data
