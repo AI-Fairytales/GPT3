@@ -8,9 +8,11 @@ import pandas as pd
 import openai
 import uuid
 import os
+import random
 from models.functions import chunk, postprocess_text, process_fairy_tales_dataset, \
      get_audio, get_images_tale, create_pdf, read_keys, read_voices
 from models.classes import Example, GPT, FairyTaleGenerator
+from prompts import var_dict
 #import pdfkit
 
 
@@ -42,6 +44,8 @@ try:
     make_images = st.button('Make images', disabled = show_listen)
     if generate:
         #ftg = FairyTaleGenerator(key_openai, "tales.csv")
+        res = random.choice(var_dict[hero])
+        print(res)
         st.session_state['responce'] = "The kingdom of Ayland was in turmoil. The king and queen had died, leaving behind them a young daughter, Princess Aurora. Aurora was only six years old when her parents\
 died, and so the kingdom was left in the care of her uncle, Duke Henry.\
 Duke Henry was a kind man, and he loved his niece dearly. But he was also\
