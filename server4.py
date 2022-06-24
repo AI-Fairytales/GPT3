@@ -26,11 +26,12 @@ try:
     key_openai, key_playht = read_keys()
     voice_ids, voice_names = read_voices()
     hero = form_1.selectbox("Choose your story character", ('Knight', 'Princess', 'Dragon', 'Dog', 'King'))
+    story_prompt = random.choice(var_dict[hero])
     print('responce' in st.session_state)
     if 'responce' in st.session_state:
 
         responce = st.session_state['responce']
-        responce = form_1.text_area('Fairytail about {}:'.format(hero), responce, height=400)
+        responce = form_1.text_area('Fairytail about {}:'.format(story_prompt), responce, height=400)
         show_listen = False
         print(responce)
     else:
@@ -43,21 +44,21 @@ try:
     listen = st.button('Listen fairytale', disabled = show_listen)
     make_images = st.button('Make images', disabled = show_listen)
     if generate:
-        #ftg = FairyTaleGenerator(key_openai, "tales.csv")
-        story_prompt = random.choice(var_dict[hero])
-        print('story prompt: ', story_prompt)
-        st.session_state['responce'] = "The kingdom of Ayland was in turmoil. The king and queen had died, leaving behind them a young daughter, Princess Aurora. Aurora was only six years old when her parents\
-died, and so the kingdom was left in the care of her uncle, Duke Henry.\
-Duke Henry was a kind man, and he loved his niece dearly. But he was also\
-a ambitious man, and he had his sights set on the throne. So when it became clear that the people of Ayland would not accept him as their king, he\
-hatched a plan to get rid of Princess Aurora.\
-He had a tower built in the middle of the forest, and he had Aurora locked away inside it. The only person\
-who was allowed to visit her was her nurse, who brought her food and supplies.\
-Phillip returned the next day with a ladder. He climbed up to the window and helped Aurora down.\
-They rode off into the sunset, and they lived happily ever after.\
-"
-        print("generate")
+        ftg = FairyTaleGenerator(key_openai, "tales.csv")
+        st.session_state['responce'] = ftg.get_one_tale(story_prompt.lower())
         responce = st.session_state['responce']
+        print('story prompt: ', story_prompt)
+#         #st.session_state['responce'] = "The kingdom of Ayland was in turmoil. The king and queen had died, leaving behind them a young daughter, Princess Aurora. Aurora was only six years old when her parents\
+# died, and so the kingdom was left in the care of her uncle, Duke Henry.\
+# Duke Henry was a kind man, and he loved his niece dearly. But he was also\
+# a ambitious man, and he had his sights set on the throne. So when it became clear that the people of Ayland would not accept him as their king, he\
+# hatched a plan to get rid of Princess Aurora.\
+# He had a tower built in the middle of the forest, and he had Aurora locked away inside it. The only person\
+# who was allowed to visit her was her nurse, who brought her food and supplies.\
+# Phillip returned the next day with a ladder. He climbed up to the window and helped Aurora down.\
+# They rode off into the sunset, and they lived happily ever after.\
+#"
+        print("generate")
         for key in ['image_names', 'audio', 'tale_parts']:
             if key in st.session_state:
                 st.session_state.pop(key)
