@@ -48,7 +48,8 @@ try:
     submit = form_1.form_submit_button('Generate fairytail')
     if submit:
         #ftg = FairyTaleGenerator(key_openai, "tales.csv")
-        responce = "The kingdom of Ayland was in turmoil. The king and queen had died, leaving behind them a young daughter, Princess Aurora. Aurora was only six years old when her parents\
+        if 'responce' not in st.session_state:
+            st.session_state['responce'] = "The kingdom of Ayland was in turmoil. The king and queen had died, leaving behind them a young daughter, Princess Aurora. Aurora was only six years old when her parents\
 died, and so the kingdom was left in the care of her uncle, Duke Henry.\
 Duke Henry was a kind man, and he loved his niece dearly. But he was also\
 a ambitious man, and he had his sights set on the throne. So when it became clear that the people of Ayland would not accept him as their king, he\
@@ -76,27 +77,35 @@ They rode off into the sunset, and they lived happily ever after.\
         #st.download_button('Download text of fairytail', responce)
         #responce = 'Fairytail about {}:. Tell me fairy tail'.format(command)
         #st.download_button('Download text of fairytail', command)
-        if command_1 == 'Woman':
-            title = "tale"
-            voice = "Emilia"
-            status, filename = get_audio(responce, voice, title, key_playht)
-            #audio_file = open('welcome.mp3', 'rb')
-            #audio_bytes = audio_file.read()
-            st.audio(filename)
-        if command_1 == 'Man':
-            title = "tale"
-            voice = "Noah"
-            status, filename = get_audio(responce, voice, title, key_3)
-            #audio_file = open('welcome.mp3', 'rb')
-            #audio_bytes = audio_file.read()
-            st.audio(filename)
 
 except Exception as e:
     st.success(f'Something Went Wrong! {e}')   
     #submit_1 = form_1.form_submit_button('Submit 1')
     #if submit_1:
         #print(responce)
+try:
+    form_2 = st.form(key='my-form2')
+    command_2 = form_2.selectbox("Choose your story teller",
+('Woman','Man'))
+    submit = form_2.form_submit_button('Generate fairytail')
+    if submit:
+        if command_1 == 'Woman':
+            title = "tale"
+            voice = "Emilia"
+            status, filename = get_audio(st.session_state['responce'], voice, title, key_playht)
+            #audio_file = open('welcome.mp3', 'rb')
+            #audio_bytes = audio_file.read()
+            st.audio(filename)
+        if command_1 == 'Man':
+            title = "tale"
+            voice = "Noah"
+            status, filename = get_audio(st.session_state['responce'], voice, title, key_playht)
+            #audio_file = open('welcome.mp3', 'rb')
+            #audio_bytes = audio_file.read()
+            st.audio(filename)
 
+except Exception as e:
+    st.success(f'Something Went Wrong! {e}')  
 
 
 
