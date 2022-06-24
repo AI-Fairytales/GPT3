@@ -49,7 +49,8 @@ try:
             make_images = st.button('Make images', disabled = show_listen)
     if generate:
         ftg = FairyTaleGenerator(key_openai, "tales.csv")
-        st.session_state['responce'] = ftg.get_one_tale(hero.lower()).replace("output:", "").strip()
+        st.session_state['story_prompt'] = story_prompt = random.choice(var_dict[hero])
+        st.session_state['responce'] = ftg.get_one_tale(story_prompt).replace("output:", "").strip()
 #             "The kingdom of Ayland was in turmoil. The king and queen had died, leaving behind them a young daughter, Princess Aurora. Aurora was only six years old when her parents\
 # died, and so the kingdom was left in the care of her uncle, Duke Henry.\
 # Duke Henry was a kind man, and he loved his niece dearly. But he was also\
@@ -62,7 +63,7 @@ try:
 # "
         print("generate")
         responce = st.session_state['responce']
-        st.session_state['story_prompt'] = story_prompt = random.choice(var_dict[hero])
+
         print('story prompt: ', story_prompt)
 
         for key in ['image_names', 'audio', 'tale_parts']:
@@ -101,6 +102,8 @@ try:
         print(status, filename)
         if status == 0:
             st.session_state['audio'] = filename
+        else:
+            st.text(f"audio for {voice_name} wasn't created by Play.ht")
     if 'audio' in st.session_state:
         form_1.audio(st.session_state['audio'] )
 
