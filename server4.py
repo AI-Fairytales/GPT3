@@ -54,10 +54,9 @@ They rode off into the sunset, and they lived happily ever after.\
 "
         print("generate")
         responce = st.session_state['responce']
-        if 'image_names' in st.session_state:
-                st.session_state.pop('image_names')
-        if 'audio' in st.session_state:
-                st.session_state.pop('audio')
+        for key in ['image_names', 'audio', 'tale_parts']:
+            if key in st.session_state:
+                st.session_state.pop(key)
         print(responce)
         print('responce' in st.session_state)
 
@@ -71,15 +70,17 @@ They rode off into the sunset, and they lived happily ever after.\
         table = st.columns(len(st.session_state['image_names']))
         for i, n in enumerate(st.session_state['image_names']):
             table[i] = st.image(n)
-        # st.text_area('Fairytail about {}:'.format(hero), responce, height = 400)
-        # data = create_pdf(parts, image_names)
-        # #data = create_pdf(parts)
-        # st.download_button(
-        #     "⬇️ Download Tale",
-        #     data=data,
-        #     file_name="tale.pdf",
-        #     mime="application/octet-stream",
-        # )
+    if ('image_names' in  st.session_state) and ('responce' in  st.session_state) and ('tale_parts' in st.session_state) :
+        data = create_pdf(st.session_state['tale_parts'], st.session_state['image_names'])
+        st.download_button(
+            "⬇️ Download Tale",
+            data=data,
+            file_name="tale.pdf",
+            mime="application/octet-stream",
+        )
+        print("pdf")
+    else:
+        print("no pdf")
     if listen:
         index = voice_names.index(voice_name)
         voice_id = voice_ids[index]
