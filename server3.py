@@ -60,12 +60,12 @@ Phillip returned the next day with a ladder. He climbed up to the window and hel
 They rode off into the sunset, and they lived happily ever after.\
 "
         #ftg.get_one_tale(command.lower())
-        image_names, parts = get_images_tale(responce, command)
+        image_names, parts = get_images_tale(st.session_state['responce'], command)
         #parts = get_images_tale(responce, command)
         table = st.columns(len(image_names))
         for i, n in enumerate(image_names):
             table[i] = st.image(n)
-        st.text_area('Fairytail about {}:'.format(command), responce, height = 400)
+        st.text_area('Fairytail about {}:'.format(command), st.session_state['responce'], height = 400)
         data = create_pdf(parts, image_names)
         #data = create_pdf(parts)
         st.download_button(
