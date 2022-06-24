@@ -8,9 +8,11 @@ import pandas as pd
 import openai
 import uuid
 import os
+import random
 from models.functions import chunk, postprocess_text, process_fairy_tales_dataset, \
      get_audio, get_images_tale, create_pdf, read_keys
 from models.classes import Example, GPT, FairyTaleGenerator
+from prompts import var_dict
 #import pdfkit
 
 # if 'store' not in st.session_state:
@@ -59,14 +61,15 @@ who was allowed to visit her was her nurse, who brought her food and supplies.\
 Phillip returned the next day with a ladder. He climbed up to the window and helped Aurora down.\
 They rode off into the sunset, and they lived happily ever after.\
 "
+        res = random.choice(var_dict[command])
         #ftg.get_one_tale(command.lower())
-        image_names, parts = get_images_tale(st.session_state['responce'], command)
+        #image_names, parts = get_images_tale(st.session_state['responce'], command)
         #parts = get_images_tale(responce, command)
-        table = st.columns(len(image_names))
-        for i, n in enumerate(image_names):
-            table[i] = st.image(n)
-        st.text_area('Fairytail about {}:'.format(command.lower()), st.session_state['responce'], height = 400)
-        data = create_pdf(parts, image_names)
+        #table = st.columns(len(image_names))
+        #for i, n in enumerate(image_names):
+        #    table[i] = st.image(n)
+        st.text_area('Fairytail about {}:'.format(res.lower()), st.session_state['responce'], height = 400)
+        #data = create_pdf(parts, image_names)
         #data = create_pdf(parts)
         # if submit or st.session_state.store:
         #     st.session_state.store = True

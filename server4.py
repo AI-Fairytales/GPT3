@@ -10,7 +10,7 @@ import uuid
 import os
 import random
 from models.functions import chunk, postprocess_text, process_fairy_tales_dataset, \
-     get_audio, get_images_tale, create_pdf, read_keys, read_voices
+     get_audio, get_images_tale, create_pdf, read_voices
 from models.classes import Example, GPT, FairyTaleGenerator
 from prompts import var_dict
 #import pdfkit
@@ -23,7 +23,8 @@ st.image("https://i.postimg.cc/yN20YX4F/Stories.png", use_column_width=True)
 try:
     #print(st.__installation_id__)
     form_1 = st.form(key='my-form1')
-    key_openai, key_playht = read_keys()
+    #key_openai, key_playht = read_keys()
+    key_openai, key_playht = os.environ['KEY_OP'], os.environ['KEY_PLAY']
     voice_ids, voice_names = read_voices()
     hero = form_1.selectbox("Choose your story character", ('Knight', 'Princess', 'Dragon', 'Dog', 'King'))
 
