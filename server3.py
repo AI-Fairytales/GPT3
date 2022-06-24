@@ -68,7 +68,7 @@ They rode off into the sunset, and they lived happily ever after.\
         st.text_area('Fairytail about {}:'.format(command.lower()), st.session_state['responce'], height = 400)
         data = create_pdf(parts, image_names)
         #data = create_pdf(parts)
-        if submit_3 or st.session_state.store:
+        if submit or st.session_state.store:
             st.session_state.store = True
         st.download_button(
             "⬇️ Download PDF",
