@@ -134,7 +134,8 @@ def get_images_tale(tale, title):
    n = len(sentences)
    print(n)
    part = n // MAX_IMAGES
-   result  = [sentences[i * part + random.randint(0, part - 1)] for i in range(MAX_IMAGES)]
+   len_parts = [part] * (MAX_IMAGES - 1) + [MAX_IMAGES]
+   result  = [sentences[min(i * part + random.randint(0, len_parts[i] - 1), n - 1)] for i in range(MAX_IMAGES)]
    print(result)
    result[0] = sentences[0]
    
@@ -149,7 +150,10 @@ def get_images_tale(tale, title):
       image_result.write(image_64_decode)
       image_names.append(f'image{i}.png')
    #image_names = get_images(result)
-   tale_parts = [".".join(sentences[i * part : i * part + part]) for i in range(MAX_IMAGES)]
+   tale_parts = [". ".join(sentences[i * part : i * part + part]) + ". " for i in range(MAX_IMAGES - 1)]
+   i = MAX_IMAGES - 1
+   tale_parts.append(". ".join(sentences[i * part : i * part + MAX_IMAGES]) + ". " )
+   print(tale_parts)
    return image_names, tale_parts
    #return tale_parts
 
@@ -157,14 +161,14 @@ def get_images_tale(tale, title):
 def add_text(text, pdf):
     #pdf.add_page()
     pdf.set_font("Arial", size=12)
-    lines = text.split(".")
-    print(len(lines))
-    for line in lines:
-        pdf.cell(200, 10, txt=line, ln=1, align="L")
+    #lines = text.split(".")
+    #print(len(lines))
+    #for line in lines:
+    pdf.multi_cell(200, 10, txt=text,  align="L")
 
 
 def add_image(image_path, pdf):
-    pdf.image(image_path, w=100, type = 'PNG')
+    pdf.image(image_path, x = 60,  w = 60, type = 'PNG')
     #pdf.set_font("Arial", size=12)
     #pdf.ln(85)  # ниже на 85
     #pdf.cell(200, 10, txt="{}".format(image_path), ln=1)
