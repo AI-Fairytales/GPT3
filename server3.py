@@ -13,7 +13,7 @@ from models.functions import chunk, postprocess_text, process_fairy_tales_datase
 from models.classes import Example, GPT, FairyTaleGenerator
 #import pdfkit
 
- if 'store' not in st.session_state:
+if 'store' not in st.session_state:
      st.session_state.store = False
 
 titles, stories, df = process_fairy_tales_dataset('./', 'merged_clean2.txt')
