@@ -8,7 +8,8 @@ import pandas as pd
 import openai
 import uuid
 import os
-from models.functions import chunk, postprocess_text, process_fairy_tales_dataset, get_audio, get_images_tale, create_pdf
+from models.functions import chunk, postprocess_text, process_fairy_tales_dataset, \
+     get_audio, get_images_tale, create_pdf, read_keys
 from models.classes import Example, GPT, FairyTaleGenerator
 #import pdfkit
 
@@ -37,15 +38,16 @@ st.title('Fairytail Generation')
 #     st.success(f'Need key to proceed')
 try:
     form_1 = st.form(key='my-form1')
-    key_0 = form_1.text_input('API Key for OpenAI')
-    key_3 = form_1.text_input('API Key for Play.ht')
+    key_openai, key_playht = read_keys()
+    #key_0 = form_1.text_input('API Key for OpenAI')
+    #key_3 = form_1.text_input('API Key for Play.ht')
     command = form_1.selectbox("Choose your story character",
 ('Knight','Princess', 'Dragon', 'Dog', 'King'))
     command_1 = form_1.selectbox("Choose your story teller",
 ('Woman','Man'))
     submit = form_1.form_submit_button('Generate fairytail')
     if submit:
-        #ftg = FairyTaleGenerator(key_0, "tales.csv")
+        #ftg = FairyTaleGenerator(key_openai, "tales.csv")
         responce = "The kingdom of Ayland was in turmoil. The king and queen had died, leaving behind them a young daughter, Princess Aurora. Aurora was only six years old when her parents\
 died, and so the kingdom was left in the care of her uncle, Duke Henry.\
 Duke Henry was a kind man, and he loved his niece dearly. But he was also\
@@ -77,7 +79,7 @@ They rode off into the sunset, and they lived happily ever after.\
         if command_1 == 'Woman':
             title = "tale"
             voice = "Emilia"
-            status, filename = get_audio(responce, voice, title, key_3)
+            status, filename = get_audio(responce, voice, title, key_playht)
             #audio_file = open('welcome.mp3', 'rb')
             #audio_bytes = audio_file.read()
             st.audio(filename)

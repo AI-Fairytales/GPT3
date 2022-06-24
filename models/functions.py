@@ -6,6 +6,7 @@ import pandas as pd
 import random
 import base64
 from fpdf import FPDF
+import yaml
 
 
 MAX_IMAGES = 4
@@ -189,3 +190,9 @@ def create_pdf(texts, image_names):
 #     with open("output.pdf", 'rb') as f:
 #         data = f.read()
 #     return data
+
+def read_keys():
+    # Read YAML file
+    with open("conf.yaml", 'r') as stream:
+        data_loaded = yaml.safe_load(stream)
+    return data_loaded['key_openai'], data_loaded['key_playht']
