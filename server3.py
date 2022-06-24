@@ -43,8 +43,6 @@ try:
     #key_3 = form_1.text_input('API Key for Play.ht')
     command = form_1.selectbox("Choose your story character",
 ('Knight','Princess', 'Dragon', 'Dog', 'King'))
-    command_1 = form_1.selectbox("Choose your story teller",
-('Woman','Man'))
     submit = form_1.form_submit_button('Generate fairytail')
     if submit:
         #ftg = FairyTaleGenerator(key_openai, "tales.csv")
@@ -89,14 +87,14 @@ try:
 ('Woman','Man'))
     submit = form_2.form_submit_button('Generate fairytail')
     if submit:
-        if command_1 == 'Woman':
+        if command_2 == 'Woman':
             title = "tale"
             voice = "Emilia"
             status, filename = get_audio(st.session_state['responce'], voice, title, key_playht)
             #audio_file = open('welcome.mp3', 'rb')
             #audio_bytes = audio_file.read()
             st.audio(filename)
-        if command_1 == 'Man':
+        if command_2 == 'Man':
             title = "tale"
             voice = "Noah"
             status, filename = get_audio(st.session_state['responce'], voice, title, key_playht)
