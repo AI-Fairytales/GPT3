@@ -13,10 +13,12 @@ from models.functions import chunk, postprocess_text, process_fairy_tales_datase
 from models.classes import Example, GPT, FairyTaleGenerator
 #import pdfkit
 
+# if 'store' not in st.session_state:
+#      st.session_state.store = False
 
 titles, stories, df = process_fairy_tales_dataset('./', 'merged_clean2.txt')
 st.title('Fairytail Generation')
-
+st.image("https://i.postimg.cc/yN20YX4F/Stories.png", use_column_width=True)
 # r = requests.post(url='https://hf.space/embed/valhalla/glide-text2im/+/api/predict/',      json={"data": ['text']})
 # encoding = r.json()['data'][0][22:]
 # image_64_decode = base64.b64decode(encoding)
@@ -43,8 +45,6 @@ try:
     #key_3 = form_1.text_input('API Key for Play.ht')
     command = form_1.selectbox("Choose your story character",
 ('Knight','Princess', 'Dragon', 'Dog', 'King'))
-    command_1 = form_1.selectbox("Choose your story teller",
-('Woman','Man'))
     submit = form_1.form_submit_button('Generate fairytail')
     if submit:
         #ftg = FairyTaleGenerator(key_openai, "tales.csv")
@@ -60,14 +60,16 @@ Phillip returned the next day with a ladder. He climbed up to the window and hel
 They rode off into the sunset, and they lived happily ever after.\
 "
         #ftg.get_one_tale(command.lower())
-        image_names, parts = get_images_tale(responce, command)
+        image_names, parts = get_images_tale(st.session_state['responce'], command)
         #parts = get_images_tale(responce, command)
         table = st.columns(len(image_names))
         for i, n in enumerate(image_names):
             table[i] = st.image(n)
-        st.text_area('Fairytail about {}:'.format(command), responce, height = 400)
+        st.text_area('Fairytail about {}:'.format(command.lower()), st.session_state['responce'], height = 400)
         data = create_pdf(parts, image_names)
         #data = create_pdf(parts)
+        # if submit or st.session_state.store:
+        #     st.session_state.store = True
         st.download_button(
             "⬇️ Download PDF",
             data=data,
@@ -87,16 +89,16 @@ try:
     form_2 = st.form(key='my-form2')
     command_2 = form_2.selectbox("Choose your story teller",
 ('Woman','Man'))
-    submit = form_2.form_submit_button('Generate fairytail')
+    submit = form_2.form_submit_button('Generate story teller voice')
     if submit:
-        if command_1 == 'Woman':
+        if command_2 == 'Woman':
             title = "tale"
             voice = "Emilia"
             status, filename = get_audio(st.session_state['responce'], voice, title, key_playht)
             #audio_file = open('welcome.mp3', 'rb')
             #audio_bytes = audio_file.read()
             st.audio(filename)
-        if command_1 == 'Man':
+        if command_2 == 'Man':
             title = "tale"
             voice = "Noah"
             status, filename = get_audio(st.session_state['responce'], voice, title, key_playht)
