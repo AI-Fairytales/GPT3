@@ -22,12 +22,21 @@ st.image("https://i.postimg.cc/yN20YX4F/Stories.png", use_column_width=True)
 
 try:
     #print(st.__installation_id__)
-    form_1 = st.form(key='my-form1')
+
     #key_openai, key_playht = read_keys()
     key_openai, key_playht = os.environ['KEY_OP'], os.environ['KEY_PLAY']
     voice_ids, voice_names = read_voices()
-    hero = form_1.selectbox("Choose your story character", ('Knight', 'Princess', 'Dragon', 'Dog', 'King'))
 
+
+    hero = st.selectbox("Choose your story character", ('Knight', 'Princess', 'Dragon', 'Dog', 'King'))
+
+
+    form_1 = st.form(key='my-form1')
+    st.session_state['story_prompt'] = story_prompt = form_1.selectbox("Choose  your story prompt", var_dict[hero])
+    story_prompt_temp = form_1.text_input("Enter your story prompt")
+    if story_prompt_temp != "":
+        st.session_state['story_prompt'] = story_prompt = story_prompt_temp
+                                                                       
     print('responce' in st.session_state)
     if 'responce' in st.session_state:
 
@@ -45,15 +54,16 @@ try:
     #        voice_name = form_1.selectbox("Choose your story teller", voice_names, index=62)
     #        st.session_state['firsttime'] = 1
     #else:
-    voice_name = form_1.selectbox("Choose your story teller", voice_names)
-    col1, col2, col3, col4 = st.columns(4)
+    voice_name = form_1.selectbox("Choose your story teller", voice_names, index = 62)
+    print(voice_name)
+    col1, col2, col3, col4 = form_1.columns(4)
     with col1:
-            listen = st.button('Listen fairytale', disabled=show_listen)
+            listen = form_1.form_submit_button('Listen fairytale')#, disabled=show_listen)
     with col2:
-            make_images = st.button('Make images', disabled = show_listen)
+            make_images = form_1.form_submit_button('Make images')#, disabled = show_listen)
     if generate:
         ftg = FairyTaleGenerator(key_openai, "tales.csv")
-        st.session_state['story_prompt'] = story_prompt = random.choice(var_dict[hero])
+        #st.session_state['story_prompt'] = story_prompt = random.choice(var_dict[hero])
         st.session_state['responce'] = ftg.get_one_tale(story_prompt).replace("output:", "").strip()
 #             "The kingdom of Ayland was in turmoil. The king and queen had died, leaving behind them a young daughter, Princess Aurora. Aurora was only six years old when her parents\
 # died, and so the kingdom was left in the care of her uncle, Duke Henry.\
