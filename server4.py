@@ -41,11 +41,11 @@ try:
 
 
     generate = form_1.form_submit_button('Generate fairytale')
-    if 'firsttime' not in st.session_state:
-            voice_name = form_1.selectbox("Choose your story teller", voice_names, index=62)
-            st.session_state['firsttime'] = 1
-    else:
-            voice_name = form_1.selectbox("Choose your story teller", voice_names)
+    #if 'firsttime' not in st.session_state:
+    #        voice_name = form_1.selectbox("Choose your story teller", voice_names, index=62)
+    #        st.session_state['firsttime'] = 1
+    #else:
+    voice_name = form_1.selectbox("Choose your story teller", voice_names)
     col1, col2, col3, col4 = st.columns(4)
     with col1:
             listen = st.button('Listen fairytale', disabled=show_listen)
