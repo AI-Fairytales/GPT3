@@ -33,7 +33,7 @@ try:
 
     form_1 = st.form(key='my-form1')
     st.session_state['story_prompt'] = story_prompt = form_1.selectbox("Choose  your story prompt", var_dict[hero])
-    story_prompt_temp = form_1.text_input("Enter your story prompt")
+    story_prompt_temp = form_1.text_input("OR Enter your story prompt")
     if story_prompt_temp != "":
         st.session_state['story_prompt'] = story_prompt = story_prompt_temp
                                                                        
