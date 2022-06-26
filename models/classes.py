@@ -29,7 +29,8 @@ class Example:
             "output": self.get_output(),
             "id": self.get_id(),
         }
-
+def words_num(text):
+        return len(text.split(" "))
 
 class GPT:
     """The main class for a user to interface with the OpenAI API.
@@ -38,7 +39,7 @@ class GPT:
     def __init__(self,
                  engine="text-davinci-002",
                  temperature=0.8,
-                 max_tokens=2000,
+                 max_tokens=1000,
                  input_prefix="input: ",
                  input_suffix="\n",
                  output_prefix="output: ",
@@ -51,6 +52,7 @@ class GPT:
         self.input_prefix = input_prefix
         self.input_suffix = input_suffix
         self.output_prefix = output_prefix
+        self.n = 3
         self.output_suffix = output_suffix
         self.append_output_prefix_to_query = append_output_prefix_to_query
         self.stop = (output_suffix + input_prefix).strip()
@@ -108,15 +110,25 @@ class GPT:
                                             max_tokens=self.get_max_tokens(),
                                             temperature=self.get_temperature(),
                                             top_p=1,
-                                            n=1,
+                                            n=self.n,
                                             stream=False,
                                             stop=self.stop)
         return response
 
+
+
     def get_top_reply(self, prompt):
         """Obtains the best result as returned by the API."""
         response = self.submit_request(prompt)
-        return response['choices'][0]['text']
+        max_words = 0
+        max_index = 0
+        for i in range(self.n):
+            temp = words_num(response['choices'][i]['text'])
+            print(temp)
+            if temp > max_words:
+                max_words = temp
+                max_index = i
+        return response['choices'][max_index]['text']
 
     def format_example(self, ex):
         """Formats the input, output pair."""
@@ -130,8 +142,8 @@ class FairyTaleGenerator:
     def __init__(self, key, dataset_path):
         self.gpt = GPT()
         self.set_openai_key(key)
-        self.n_examples = 1
-        self.n_cut = 20 #len of example
+        self.n_examples = 8
+        self.n_cut = 200 #len of example
         #with open(dataset_path, 'w', encoding='utf-8') as r:
               
         df = pd.read_csv(dataset_path, sep = '\t')
@@ -178,17 +190,17 @@ class FairyTaleGenerator:
               #print(title)
               story = self.stories[n] 
               #print(len(story.split()))
-              #story_list = story.split()
-              #story = " ".join(story_list[0 : self.n_cut])
-              prompt = "Write long fairy tale of about 500 words. The title of it should be {title}"
-              result = story[0:2000].strip()
+              story_list = story.split(" ")
+              result = " ".join(story_list[0 : self.n_cut]).strip()
+              prompt = "Write long long long fairy tale of about 500 words. The title of it should be {title}"
+              #result = story[0:2000].strip()
               #print(title)
               #print(result)
               
               self.gpt.add_example(Example(prompt, result))
 
         #keyword = "About A dog catching a ball"      
-        ask = f"Write long fairy tale of about 500 words. The title of it should be {keyword}"
+        ask = f"Write long long long fairy tale of about 500 words. The title of it should be {keyword}"
         responce = self.gpt.get_top_reply(ask)
         tale = self.postprocess_tale(responce)
         #sentiment = self.get_sentiment_analyse(tale)
