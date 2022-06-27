@@ -14,7 +14,7 @@ MAX_IMAGES = 4
 URL_CONVERT = "https://play.ht/api/v1/convert"
 URL_GET_AUDIO = "https://play.ht/api/v1/articleStatus"
 USER_ID = 'e3KRfjvXUgZN3LoA1DzYlXpJdmC2'
-MAX_ATTEMPTS = 10
+MAX_ATTEMPTS = 30
 LAG = 1
 
 def chunk(lst, n):
