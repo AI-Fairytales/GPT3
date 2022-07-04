@@ -177,7 +177,7 @@ class FairyTaleGenerator:
         #print(parts_list)
         parts_str = [" ".join(part) for part in parts_list]
         #print(parts_str)
-        result = "\n".join(parts_str) 
+        result = " ".join(parts_str)
         #print(result)
         return result       
 
