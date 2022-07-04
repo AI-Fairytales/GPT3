@@ -178,6 +178,10 @@ class FairyTaleGenerator:
         parts_str = [" ".join(part) for part in parts_list]
         #print(parts_str)
         result = " ".join(parts_str)
+        result = result.replace(".\n", ". \n")
+        result = result.replace("!\n", "! \n")
+        result = result.replace("?\n", "? \n")
+        #result = re.sub("\"[^\s]", "\" ")
         #print(result)
         return result       
 
