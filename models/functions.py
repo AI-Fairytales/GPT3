@@ -8,6 +8,8 @@ import base64
 from fpdf import FPDF
 import yaml
 import streamlit as st
+from transformers import pipeline, set_seed
+from bad_words import var_list
 
 
 MAX_IMAGES = 4
@@ -213,3 +215,16 @@ def read_voices():
     voice_ids = voices['voice_id'].values.tolist()
     voice_names = voices['voice_name'].values.tolist()
     return voice_ids, voice_names
+
+
+def get_sentiment(tale):
+    classifier = pipeline('sentiment-analysis')
+    result = classifier(tale)
+    return result
+
+def get_love_mood(tale):
+    for word in var_list:
+        if tale.find(word) != -1:
+            print(f"bad****{word}*****")
+            return True, word
+    return False, ""

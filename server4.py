@@ -10,9 +10,10 @@ import uuid
 import os
 import random
 from models.functions import chunk, postprocess_text, process_fairy_tales_dataset, \
-     get_audio, get_images_tale, create_pdf, read_voices
+     get_audio, get_images_tale, create_pdf, read_voices, get_sentiment, get_love_mood
 from models.classes import Example, GPT, FairyTaleGenerator
 from prompts import var_dict
+
 #import pdfkit
 
 
@@ -43,6 +44,11 @@ try:
         responce = st.session_state['responce']
         responce = form_1.text_area('Fairytail about {}:'.format(st.session_state['story_prompt']), responce, height=400)
         show_listen = False
+        sentiment = get_sentiment(responce)
+        love_mood, word = get_love_mood(responce)
+
+        st.text(f"sentiment: {sentiment}")
+        st.text(f"under 18+: {love_mood}: {word}")
         print(responce)
     else:
         responce = ""
@@ -62,6 +68,7 @@ try:
     with col2:
             make_images = form_1.form_submit_button('Make images')#, disabled = show_listen)
     if generate:
+
         ftg = FairyTaleGenerator(key_openai, "tales.csv")
         #st.session_state['story_prompt'] = story_prompt = random.choice(var_dict[hero])
         st.session_state['responce'] = ftg.get_one_tale(story_prompt).replace("output:", "").strip()
@@ -85,6 +92,7 @@ try:
                 st.session_state.pop(key)
         print(responce)
         print('responce' in st.session_state)
+
         st.experimental_rerun()
 
     if make_images:
