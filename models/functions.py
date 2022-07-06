@@ -10,7 +10,7 @@ import yaml
 import streamlit as st
 from transformers import pipeline, set_seed
 from bad_words import var_list
-#from nltk.stem import PorterStemmer
+from nltk.stem import PorterStemmer
 
 
 MAX_IMAGES = 4
@@ -224,14 +224,19 @@ def get_sentiment(tale):
     return result
 
 def get_love_mood(tale):
-    #tale_list = list(tale.split(" "))
+    tale_list = list(tale.split(" "))
     root_words = []
-    #ps = PorterStemmer()
-    # for w in tale_list:
-    #     rootWord = ps.stem(w)
+    ps = PorterStemmer()
+    for w in tale_list:
+         rootWord = ps.stem(w)
+         root_words.append(rootWord)
+
 
     for word in var_list:
-        if tale.find(word) != -1:
+        if word in root_words:
+            print(f"bad****{word}*****")
+            return True, word
+        if tale.find(" " + word + " ") != -1:
             print(f"bad****{word}*****")
             return True, word
     return False, ""
