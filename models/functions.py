@@ -219,7 +219,7 @@ def read_voices():
 
 
 def get_sentiment(tale):
-    classifier = pipeline('sentiment-analysis')
+    classifier = pipeline('sentiment-analysis', max_length=512, truncation=True)
     result = classifier(tale)
     return result
 
