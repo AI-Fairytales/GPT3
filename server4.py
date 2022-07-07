@@ -10,7 +10,7 @@ import uuid
 import os
 import random
 from models.functions import chunk, postprocess_text, process_fairy_tales_dataset, \
-     get_audio, get_images_tale, create_pdf, read_voices, get_sentiment, get_love_mood
+     get_audio, get_images_tale, create_pdf, read_voices, get_sentiment, get_love_mood, read_keys
 from models.classes import Example, GPT, FairyTaleGenerator
 from prompts import var_dict
 
@@ -24,12 +24,20 @@ st.image("https://i.postimg.cc/yN20YX4F/Stories.png", use_column_width=True)
 try:
     #print(st.__installation_id__)
 
-    #key_openai, key_playht = read_keys()
-    key_openai, key_playht = os.environ['KEY_OP'], os.environ['KEY_PLAY']
-    voice_ids, voice_names = read_voices()
+    userid_playht, userid_amazon = read_keys()
+    key_openai, key_playht, key_amazon = os.environ['KEY_OP'], os.environ['KEY_PLAY'], os.environ['KEY_AMAZON']
+
 
 
     hero = st.selectbox("Choose your story character", ('Knight', 'Princess', 'Dragon', 'Dog', 'King'))
+    sound_provider = st.selectbox("Choose sound API", ('Play.ht','Amazon'))
+    voice_ids, voice_names = read_voices(sound_provider)
+    if sound_provider == 'Amazon':
+        key_sound = key_amazon
+        user_id_sound = userid_amazon
+    else:
+        key_sound = key_playht
+        user_id_sound = userid_playht
 
 
     form_1 = st.form(key='my-form1')
@@ -44,11 +52,10 @@ try:
         responce = st.session_state['responce']
         responce = form_1.text_area('Fairytail about {}:'.format(st.session_state['story_prompt']), responce, height=400)
         show_listen = False
-        sentiment = get_sentiment(responce)
-        love_mood, word = get_love_mood(responce)
 
-        st.text(f"sentiment: {sentiment}")
-        st.text(f"under 18+: {love_mood}: {word}")
+
+        st.text(f"sentiment: {st.session_state['sentiment']}")
+        st.text(f"under 18+: {st.session_state['love_mood']}: {st.session_state['bad_word']}")
         print(responce)
     else:
         responce = ""
@@ -60,7 +67,7 @@ try:
     #        voice_name = form_1.selectbox("Choose your story teller", voice_names, index=62)
     #        st.session_state['firsttime'] = 1
     #else:
-    voice_name = form_1.selectbox("Choose your story teller", voice_names, index = 62)
+    voice_name = form_1.selectbox("Choose your story teller", voice_names, index = 3)
     print(voice_name)
     col1, col2, col3, col4 = form_1.columns(4)
     with col1:
@@ -93,6 +100,9 @@ try:
         print(responce)
         print('responce' in st.session_state)
 
+        st.session_state['sentiment'] = get_sentiment(responce)
+        st.session_state['love_mood'], st.session_state['bad_word'] = get_love_mood(responce)
+
         st.experimental_rerun()
 
     if make_images:
@@ -120,7 +130,7 @@ try:
         index = voice_names.index(voice_name)
         voice_id = voice_ids[index]
         title = hero
-        status, filename = get_audio(responce, voice_id, title, key_playht)
+        status, filename = get_audio(sound_provider, responce, voice_id, title, key_sound, user_id_sound)
         print(status, filename)
         if status == 0:
             st.session_state['audio'] = filename

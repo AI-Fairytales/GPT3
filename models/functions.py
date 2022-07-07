@@ -12,11 +12,15 @@ from transformers import pipeline, set_seed
 from bad_words import var_list
 from nltk.stem import PorterStemmer
 
+from boto3 import Session
+from botocore.exceptions import BotoCoreError, ClientError
+from contextlib import closing
+
 
 MAX_IMAGES = 4
 URL_CONVERT = "https://play.ht/api/v1/convert"
 URL_GET_AUDIO = "https://play.ht/api/v1/articleStatus"
-USER_ID = 'e3KRfjvXUgZN3LoA1DzYlXpJdmC2'
+#USER_ID = 'e3KRfjvXUgZN3LoA1DzYlXpJdmC2'
 MAX_ATTEMPTS = 60
 LAG = 1
 
@@ -95,40 +99,72 @@ def process_fairy_tales_dataset(dataset_path, dataset_file):
     return titles, stories, df
     
 
-def get_audio(text, voice, title, API_KEY):
-    payload = json.dumps({
-          "voice": voice,
-          "content": [text],
-          "title": title
-    })
-    headers = {
-         'Authorization': API_KEY,
-         'X-User-ID': USER_ID,
-         'Content-Type': 'application/json'
-    }
+def get_audio(sound_provider, text, voice, title, API_KEY, USER_ID):
+    if sound_provider == 'Play.ht':
+                payload = json.dumps({
+                      "voice": voice,
+                      "content": [text],
+                      "title": title
+                })
+                headers = {
+                     'Authorization': API_KEY,
+                     'X-User-ID': USER_ID,
+                     'Content-Type': 'application/json'
+                }
 
-    response = requests.request("POST", url = URL_CONVERT, headers=headers, data=payload)
-    result = response.json()
-    transcriptionId = result['transcriptionId']
-    #result = json.loads(json_ob)
-    print(transcriptionId)
+                response = requests.request("POST", url = URL_CONVERT, headers=headers, data=payload)
+                result = response.json()
+                transcriptionId = result['transcriptionId']
+                #result = json.loads(json_ob)
+                print(transcriptionId)
 
-    url = "https://play.ht/api/v1/articleStatus" + f"?transcriptionId={transcriptionId}"
-#     print(url)
-    filename = 'tale.mp3'
-    for i in range(MAX_ATTEMPTS): 
-        response = requests.get(url, headers = headers)
-        result = response.json()
-        status = result['converted']
-        print(status)
-        if status == True:
-          file_url = result['audioUrl']
-          r = requests.get(file_url)
-          with open(filename, 'wb') as f:
-               f.write(r.content)
-               return 0, filename
-          time.sleep(LAG)
-    return -1, None     
+                url = "https://play.ht/api/v1/articleStatus" + f"?transcriptionId={transcriptionId}"
+            #     print(url)
+                filename = 'tale.mp3'
+                for i in range(MAX_ATTEMPTS):
+                    response = requests.get(url, headers = headers)
+                    result = response.json()
+                    status = result['converted']
+                    print(status)
+                    if status == True:
+                      file_url = result['audioUrl']
+                      r = requests.get(file_url)
+                      with open(filename, 'wb') as f:
+                           f.write(r.content)
+                           return 0, filename
+                      time.sleep(LAG)
+                return -1, None
+    elif sound_provider == 'Amazon':
+                session = Session(aws_access_key_id=USER_ID,
+                                  aws_secret_access_key=API_KEY, region_name="us-east-1")
+                polly = session.client("polly")
+                try:
+                    # Request speech synthesis
+                    response = polly.synthesize_speech(Text=text, OutputFormat="mp3",
+                                                       VoiceId=voice)
+                    print(response)
+                except (BotoCoreError, ClientError) as error:
+                    # The service returned an error, exit gracefully
+                    print(error)
+                    return -1, None
+                # Access the audio stream from the response
+                if "AudioStream" in response:
+                    with closing(response["AudioStream"]) as stream:
+                        output = "tale.mp3"
+                        try:
+                            with open(output, "wb") as file:
+                                file.write(stream.read())
+                            return 0, output
+                        except IOError as error:
+                            print(error)
+                            return -1, None
+                else:
+                    # The response didn't contain audio data, exit gracefully
+                    print("Could not stream audio")
+                    return -1, None
+
+    else:
+        return -1, None
 
 
 def get_images_tale(tale, title):
@@ -203,16 +239,19 @@ def create_pdf(title, texts, image_names):
 #         data = f.read()
 #     return data
 
-
+@st.cache
 def read_keys():
     # Read YAML file
     with open("conf.yaml", 'r') as stream:
         data_loaded = yaml.safe_load(stream)
-    return data_loaded['key_openai'], data_loaded['key_playht']
+    return data_loaded['userid_playht'], data_loaded['userid_amazon']
 
 @st.cache
-def read_voices():
-    voices = pd.read_csv("voices.csv", sep = ";")
+def read_voices(sound_provider):
+    if sound_provider == 'Amazon':
+        voices = pd.read_csv("voices_amazon.csv", sep = ";")
+    else:
+        voices = pd.read_csv("voices_playht.csv", sep=";")
     voice_ids = voices['voice_id'].values.tolist()
     voice_names = voices['voice_name'].values.tolist()
     return voice_ids, voice_names
