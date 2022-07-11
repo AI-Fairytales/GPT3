@@ -168,32 +168,33 @@ def get_audio(sound_provider, text, voice, title, API_KEY, USER_ID):
 
 
 def get_images_tale(tale, title):
-   
+   summarizer = pipeline("summarization")
    sentences = tale.split(". ")
    n = len(sentences)
    print('len', n)
    part = n // MAX_IMAGES
-   len_parts = [part] * (MAX_IMAGES - 1) + [MAX_IMAGES]
-   result  = [sentences[min(i * part + random.randint(0, len_parts[i] - 1), n - 1)] for i in range(MAX_IMAGES)]
-   result[0] = sentences[0]
-   
+   #len_parts = [part] * (MAX_IMAGES - 1) + [MAX_IMAGES]
+   #result  = [sentences[min(i * part + random.randint(0, len_parts[i] - 1), n - 1)] for i in range(MAX_IMAGES)]
+   #result[0] = sentences[0]
+   tale_parts = [". ".join(sentences[i * part : i * part + part]) + ". " for i in range(MAX_IMAGES)]
+   i = MAX_IMAGES - 1
+   tale_parts.append(". ".join(sentences[i * part + part : ]) + ". " )
+   main_sents = []
+   for part in tale_parts:
+      summary=summarizer(part, max_length=20, min_length=5, do_sample=False)[0]
+      temp = summary['summary_text']
+      main = list(temp.split("."))[0]
+      main_sents.append("Make illustration of " + " " + main.low())
    image_names = []
- 
-   for i in range(len(result)):
-      r = requests.post(url='https://hf.space/embed/valhalla/glide-text2im/+/api/predict/',  json={"data": [result[i]]})
+   for i in range(len(main_sents)):
+      r = requests.post(url='https://hf.space/embed/valhalla/glide-text2im/+/api/predict/',  json={"data": [main_sents[i]]})
       #print(r)
       encoding = r.json()['data'][0][22:]
       image_64_decode = base64.b64decode(encoding)
       image_result = open(f'image{i}.png', 'wb') # create a writable image and write the decoding result
       image_result.write(image_64_decode)
       image_names.append(f'image{i}.png')
-   #image_names = get_images(result)
-   tale_parts = [". ".join(sentences[i * part : i * part + part]) + ". " for i in range(MAX_IMAGES)]
-   i = MAX_IMAGES - 1
-   tale_parts.append(". ".join(sentences[i * part + part : ]) + ". " )
-   print(tale_parts)
    return image_names, tale_parts
-   #return tale_parts
 
 
 def add_text(text, pdf):
