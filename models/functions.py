@@ -184,7 +184,7 @@ def get_images_tale(tale, title):
       summary=summarizer(part, max_length=20, min_length=5, do_sample=False)[0]
       temp = summary['summary_text']
       main = list(temp.split("."))[0]
-      main_sents.append("Make illustration of " + " " + main.low())
+      main_sents.append("Make illustration of " + " " + main.lower())
    image_names = []
    for i in range(len(main_sents)):
       r = requests.post(url='https://hf.space/embed/valhalla/glide-text2im/+/api/predict/',  json={"data": [main_sents[i]]})
