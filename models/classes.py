@@ -196,7 +196,7 @@ class FairyTaleGenerator:
               #print(len(story.split()))
               story_list = story.split(" ")
               result = " ".join(story_list[0 : self.n_cut]).strip()
-              prompt = "Write long long long fairy tale of about 500 words. The title of it should be {title}"
+              prompt = f"Write long long long fairy tale of about 500 words. The title of it should be \"{title}\""
               #result = story[0:2000].strip()
               #print(title)
               #print(result)
@@ -204,7 +204,7 @@ class FairyTaleGenerator:
               self.gpt.add_example(Example(prompt, result))
 
         #keyword = "About A dog catching a ball"      
-        ask = f"Write long long long fairy tale of about 500 words. The title of it should be {keyword}"
+        ask = f"Write long long long fairy tale of about 500 words. The title of it should be \"{keyword}\""
         responce = self.gpt.get_top_reply(ask)
         tale = self.postprocess_tale(responce)
         #sentiment = self.get_sentiment_analyse(tale)
