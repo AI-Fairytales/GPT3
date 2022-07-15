@@ -178,7 +178,7 @@ def get_images_tale(tale, title):
    result[0] = sentences[0]
    image_names = []
    for i in range(len(result)):
-       r = requests.post(url='https://hf.space/embed/valhalla/glide-text2im/+/api/predict/',  json={"data": [result[i]]})
+      r = requests.post(url='https://hf.space/embed/valhalla/glide-text2im/+/api/predict/',  json={"data": [result[i]]})
       #print(r)
       encoding = r.json()['data'][0][22:]
       image_64_decode = base64.b64decode(encoding)
