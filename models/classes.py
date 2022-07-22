@@ -105,8 +105,12 @@ class GPT:
 
     def submit_request(self, prompt):
         """Calls the OpenAI API with the specified parameters."""
+        prompt1 = self.craft_query(prompt)
+        print("PROMPT*****************************\n")
+        print(prompt1)
+        print("*****************************\n")
         response = openai.Completion.create(engine=self.get_engine(),
-                                            prompt=self.craft_query(prompt),
+                                            prompt=prompt1,
                                             max_tokens=self.get_max_tokens(),
                                             temperature=self.get_temperature(),
                                             top_p=1,
@@ -142,11 +146,12 @@ class FairyTaleGenerator:
     def __init__(self, key, dataset_path):
         self.gpt = GPT()
         self.set_openai_key(key)
-        self.n_examples = 5
+        self.n_examples = 1
         self.n_cut = 200 #len of example
         #with open(dataset_path, 'w', encoding='utf-8') as r:
-              
-        df = pd.read_csv(dataset_path, sep = '\t')
+        print("*****")
+        df = pd.read_csv(dataset_path, sep = ';')
+        print(df)
         self.titles = df['title'].values.tolist()
         self.stories = df['story'].values.tolist()
         self.n_tales = len(self.titles)
@@ -192,11 +197,12 @@ class FairyTaleGenerator:
               n = random.randint(0, self.n_tales - 1)
               title = self.titles[n]
               #print(title)
-              story = self.stories[n] 
+              story = self.stories[n]
+              result = story
               #print(len(story.split()))
-              story_list = story.split(" ")
-              result = " ".join(story_list[0 : self.n_cut]).strip()
-              prompt = f"Write long long long fairy tale of about 500 words. The title of it should be \"{title}\""
+              #story_list = story.split(" ")
+              #result = " ".join(story_list[0 : self.n_cut]).strip()
+              prompt = f"Write long long long fairy tale about" + title
               #result = story[0:2000].strip()
               #print(title)
               #print(result)
@@ -204,7 +210,8 @@ class FairyTaleGenerator:
               self.gpt.add_example(Example(prompt, result))
 
         #keyword = "About A dog catching a ball"      
-        ask = f"Write long long long fairy tale of about 500 words. The title of it should be \"{keyword}\""
+        #ask = f"Write long long long fairy tale of about {keyword} and about the princess who was very capricious"
+        ask = f"Write long long long fairy tale of about {keyword}"
         responce = self.gpt.get_top_reply(ask)
         tale = self.postprocess_tale(responce)
         #sentiment = self.get_sentiment_analyse(tale)

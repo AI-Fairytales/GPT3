@@ -280,3 +280,25 @@ def get_love_mood(tale):
             print(f"bad****{word}*****")
             return True, word
     return False, ""
+
+
+#ЦРТ
+import requests
+import json
+
+HOST = "https://fairytales-api.herokuapp.com/api/v1/"
+
+def send_request(endpoint, parameters):
+    print(parameters)
+    resp = requests.get(
+        HOST + endpoint,
+        params = parameters##{'tale': 'hello', 'voice': 'Emma', 'service_provider' : 'Amazon'}
+    )
+    print(resp.headers)
+    if resp.status_code == 200:
+        if resp.headers['Content-Type'] == 'application/json':
+            return 0, resp.json()
+        else:
+            return 0, resp.content
+    else:
+        return -1, None
