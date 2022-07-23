@@ -8,7 +8,7 @@ import pandas as pd
 import os
 
 from prompts import var_dict
-from models.functions import read_voices, send_request
+from models.functions import read_voices, send_request, read_keys
 
 #import pdfkit
 
@@ -20,7 +20,7 @@ st.image("https://i.postimg.cc/yN20YX4F/Stories.png", use_column_width=True)
 try:
     #print(st.__installation_id__)
 
-
+    userid_playht, userid_amazon, analyse_flag = read_keys()
     hero = st.selectbox("Choose your story character", ('Knight', 'Princess', 'Dragon', 'Dog', 'King'))
     sound_provider = st.selectbox("Choose sound API", ('Play.ht','Amazon'))
     voice_ids, voice_names = read_voices(sound_provider)
@@ -38,9 +38,9 @@ try:
         responce = form_1.text_area('Fairytail about {}:'.format(st.session_state['story_prompt']), responce, height=400)
         show_listen = False
 
-
-        st.text(f"sentiment: {st.session_state['sentiment']}")
-        st.text(f"under 18+: {st.session_state['love_mood']}: {st.session_state['bad_word']}")
+        if analyse_flag:
+                st.text(f"sentiment: {st.session_state['sentiment']}")
+                st.text(f"under 18+: {st.session_state['love_mood']}: {st.session_state['bad_word']}")
         print(responce)
     else:
         responce = ""
@@ -57,7 +57,7 @@ try:
     #         make_images = form_1.form_submit_button('Make images')#, disabled = show_listen)
     if generate:
         print('story prompt: ', story_prompt)
-        status, resp_raw = send_request("tale", {'prompt': f'{story_prompt}'})
+        status, resp_raw = send_request("tale", {'prompt': f'{story_prompt}', 'analyse_flag' : analyse_flag})
         print("generate")
         #print(status, resp_raw)
         resp = resp_raw
@@ -67,8 +67,9 @@ try:
                      if key in st.session_state:
                             st.session_state.pop(key)
              #print(responce)
-             st.session_state['sentiment'] = resp['sentiment']
-             st.session_state['love_mood'], st.session_state['bad_word'] = resp['love_mood'], resp['bad_word']
+             if analyse_flag == True:
+                st.session_state['sentiment'] = resp['sentiment']
+                st.session_state['love_mood'], st.session_state['bad_word'] = resp['love_mood'], resp['bad_word']
              st.experimental_rerun()
         else:
              st.text(f"tale wasn't created")

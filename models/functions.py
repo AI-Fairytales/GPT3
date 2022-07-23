@@ -7,9 +7,18 @@ import random
 import base64
 import streamlit as st
 import requests
+import yaml
 
 
 HOST = "https://fairytales-api.herokuapp.com/api/v1/"
+#HOST = "http://localhost:5000/api/v1/"
+
+def read_keys():
+    # Read YAML file
+    print(os.getcwd())
+    with open("conf.yaml", 'r') as stream:
+        data_loaded = yaml.safe_load(stream)
+    return data_loaded['userid_playht'], data_loaded['userid_amazon'], data_loaded['analyse_flag']
 
 @st.cache
 def read_voices(sound_provider):
@@ -27,7 +36,7 @@ def send_request(endpoint, parameters):
     print(parameters)
     resp = requests.get(
         HOST + endpoint,
-        params = parameters##{'tale': 'hello', 'voice': 'Emma', 'service_provider' : 'Amazon'}
+        params = parameters, timeout = 60##{'tale': 'hello', 'voice': 'Emma', 'service_provider' : 'Amazon'}
     )
     print(resp.headers)
     if resp.status_code == 200:
