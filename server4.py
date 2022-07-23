@@ -1,19 +1,12 @@
 #!/usr/bin/env python
 
 import streamlit as st
-import json
-import base64
 import requests
 import sys
 import numpy as np
 import pandas as pd
-import openai
-import uuid
 import os
-import random
-# from models.functions import chunk, postprocess_text, process_fairy_tales_dataset, \
-#      get_audio, get_images_tale, create_pdf, read_voices, get_sentiment, get_love_mood, read_keys, send_request
-# from models.classes import Example, GPT, FairyTaleGenerator
+
 from prompts import var_dict
 from models.functions import read_voices, send_request
 
