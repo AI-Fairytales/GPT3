@@ -10,8 +10,8 @@ import requests
 import yaml
 
 
-HOST = "https://fairytales-api.herokuapp.com/api/v1/"
-#HOST = "http://localhost:5000/api/v1/"
+#HOST = "https://fairytales-api.herokuapp.com/api/v1/"
+HOST = "http://localhost:5000/api/v1/"
 
 def read_keys():
     # Read YAML file
